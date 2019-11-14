@@ -1,24 +1,16 @@
 # screenshot-diff
 
-## Project setup
+This application requires a custom express server to execute. To use, make sure you have the vue cli installed
+and all dependencies downloaded.
+
+Then, run:
 ```
-yarn install
+yarn run build
+node server.js
 ```
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+When both are done, navigate to `http://localhost:3000/` to use the application.
 
-### Compiles and minifies for production
-```
-yarn build
-```
-
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Stored screenshots will be stored in the `screenshots` directory. You may need to
+create this directory if you aren't seeing any output or are getting relevant
+errors in the terminal.
