@@ -24,20 +24,39 @@ app.post("/v1/screenshot", function(req, res) {
   const urlLocation = req.body.urlLocation;
   console.log(urlLocation);
 
-  getScreenshot(urlLocation);
+  // Get the device size from the front end
+  let size = req.body.size;
+  size = size.toLowerCase();
+  console.log(size);
+
+  getScreenshot(urlLocation, size);
 });
 
-async function getScreenshot(urlLocation) {
+//////////////////////////
+// Functions
+//////////////////////////
+
+async function getScreenshot(urlLocation, size) {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
   const hostname = psl.get(extractHostname(urlLocation));
   const date = Date.now();
 
-  const fileName = hostname + date;
-  const filePath = `./screenshots/${fileName}.png`;
-  console.log(filePath);
+  const height = deviceSizes[size].height;
+  const width = deviceSizes[size].width;
+  const isMobile = deviceSizes[size].isMobile;
 
+  const fileName = `${hostname}.${size}.${date}`;
+  const filePath = `./screenshots/${fileName}.png`;
+  console.log(`${fileName}.png`);
+
+  await page.setViewport({
+    width: width,
+    height: height,
+    deviceScaleFactor: 1,
+    isMobile: isMobile
+  });
   await page.goto(urlLocation);
   await page.screenshot({
     path: filePath
@@ -48,7 +67,6 @@ async function getScreenshot(urlLocation) {
 
 function extractHostname(url) {
   var hostname;
-  //find & remove protocol (http, ftp, etc.) and get hostname
 
   if (url.indexOf("//") > -1) {
     hostname = url.split("/")[2];
@@ -56,10 +74,40 @@ function extractHostname(url) {
     hostname = url.split("/")[0];
   }
 
-  //find & remove port number
   hostname = hostname.split(":")[0];
-  //find & remove "?"
   hostname = hostname.split("?")[0];
 
   return hostname;
 }
+
+//////////////////////////
+// Data
+//////////////////////////
+
+const deviceSizes = {
+  desktop: {
+    height: 768,
+    width: 1024,
+    isMobile: false
+  },
+  laptop: {
+    height: 812,
+    width: 375,
+    isMobile: false
+  },
+  ipad: {
+    height: 1024,
+    width: 768,
+    isMobile: true
+  },
+  iphonex: {
+    height: 812,
+    width: 375,
+    isMobile: true
+  },
+  iphone6: {
+    height: 667,
+    width: 375,
+    isMobile: true
+  }
+};

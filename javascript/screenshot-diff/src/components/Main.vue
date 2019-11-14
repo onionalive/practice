@@ -9,6 +9,8 @@
         <v-form ref="form" v-model="valid">
           <v-text-field v-model="url" label="URL to screenshot" required></v-text-field>
 
+          <v-select :items="deviceSizes" label="Select a Device Size" name="deviceSize" v-model="size"></v-select>
+
           <v-btn :disabled="!valid" color="success" class="mr-4" @click="screenshotUrl">Validate</v-btn>
         </v-form>
       </v-flex>
@@ -21,20 +23,33 @@ export default {
   name: "Main",
 
   data: () => ({
+    deviceSizes: [
+      'Desktop',
+      'Laptop',
+      'iPad',
+      'iPhoneX',
+      'iPhone6'
+    ],
     url: '',
+    size: '',
   }),
   methods: {
     screenshotUrl () {
-      const { url } = this;
+      const { url, size } = this;
       const siteUrl = window.location.href;
 
-      let urlJson = {"urlLocation": url};
-      urlJson = JSON.stringify(urlJson);
-      console.log(urlJson); // eslint-disable-line no-console
+      let deviceSize = (size.length > 0) ? size : 'Desktop';
+
+      let data = {
+        "urlLocation": url,
+        "size": deviceSize
+      };
+      data = JSON.stringify(data);
+      console.log(data); // eslint-disable-line no-console
 
       fetch(`${siteUrl}v1/screenshot`, {
         method: 'post',
-        body: urlJson,
+        body: data,
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
