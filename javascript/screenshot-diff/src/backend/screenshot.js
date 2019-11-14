@@ -4,6 +4,11 @@ const psl = require("psl");
 class Screenshot {
   constructor(url) {
     this._url = url;
+    this._filePath = "";
+  }
+
+  getFilePath() {
+    return this._filePath;
   }
 
   async grabScreenshot() {
@@ -14,10 +19,11 @@ class Screenshot {
     const date = Date.now();
 
     const fileName = hostname + date;
+    this._filePath = `./screenshots/${hostname}/${fileName}.${date}.png`;
 
     await page.goto(this._url);
     await page.screenshot({
-      path: `./screenshots/${hostname}/${fileName}.png`
+      path: this._filePath
     });
 
     await browser.close();

@@ -27,11 +27,14 @@ export default {
     screenshotUrl () {
       const { url } = this;
       const siteUrl = window.location.href;
-      console.log(url, siteUrl); // eslint-disable-line no-console
+
+      let urlJson = {"urlLocation": url};
+      urlJson = JSON.stringify(urlJson);
+      console.log(urlJson); // eslint-disable-line no-console
 
       fetch(`${siteUrl}v1/screenshot`, {
         method: 'post',
-        body: url,
+        body: urlJson,
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'

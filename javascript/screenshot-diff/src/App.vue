@@ -37,7 +37,7 @@
       </v-btn>
     </v-app-bar>
 
-    <v-content>
+    <v-content class="main-content">
       <Main />
     </v-content>
   </v-app>
@@ -61,7 +61,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped="true">
-  .v-content__wrap {
+  .main-content {
     padding-top: 20px;
   }
 </style>
