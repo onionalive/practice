@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-layout text-center wrap>
-      <v-flex mb-4>
+      <v-flex mb-5>
         <h1 class="display-2 font-weight-bold mb-3">Screenshot Difference Checker</h1>
       </v-flex>
 
@@ -11,8 +11,8 @@
 
           <v-select :items="deviceSizes" label="Select a Device Size" name="deviceSize" v-model="size"></v-select>
 
-          <v-btn :disabled="!valid" color="success" class="mr-4" @click="screenshotUrl">Get Screenshot</v-btn>
-          <v-btn :disabled="!valid" color="success" class="mr-4" @click="getExistingFiles">Get Existing Screenshots</v-btn>
+          <v-btn :disabled="!valid" color="success" class="mr-4" @click="getScreenshot">Get Screenshot</v-btn>
+          <v-btn color="success" class="mr-4" @click="getExistingFiles">Get Existing Screenshots</v-btn>
         </v-form>
       </v-flex>
 
@@ -51,7 +51,7 @@ export default {
     screenshotUrl: ''
   }),
   methods: {
-    screenshotUrl () {
+    getScreenshot () {
       const { url, size, siteUrl } = this;
 
       let deviceSize = (size.length > 0) ? size : 'Desktop';
@@ -83,6 +83,7 @@ export default {
       });
     },
     showScreenshot () {
+      const { screenshot  } = this;
       const screenshotDir = `http://localhost/personal/practice/javascript/screenshot-diff/screenshots/`;
       this.screenshotUrl = `${screenshotDir}${screenshot}`;
     }
