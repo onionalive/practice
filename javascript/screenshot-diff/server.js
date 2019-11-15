@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
-// const Screenshot = require("./src/backend/screenshot");
+const fs = require("fs");
 const puppeteer = require("puppeteer");
 const psl = require("psl");
 
@@ -17,8 +17,9 @@ app.listen(port, () => {
   console.log("listening");
 });
 
+// Get screenshot
 app.post("/v1/screenshot", function(req, res) {
-  console.log("Reached");
+  console.log("Reached - take screenshot");
 
   // Get the URL from the front end to screenshot
   const urlLocation = req.body.urlLocation;
@@ -30,6 +31,14 @@ app.post("/v1/screenshot", function(req, res) {
   console.log(size);
 
   getScreenshot(urlLocation, size);
+});
+
+// Get list of existing screenshots
+app.get("/v1/get-files", async function(req, res) {
+  console.log("Reached - get files");
+  const data = await getFilesNames();
+  console.log(data);
+  res.status(200).send(data);
 });
 
 //////////////////////////
@@ -63,6 +72,25 @@ async function getScreenshot(urlLocation, size) {
   });
 
   await browser.close();
+}
+
+function getFilesNames() {
+  return new Promise(function(resolve, reject) {
+    let listOfFiles = [];
+
+    const directoryPath = path.join(__dirname, "screenshots");
+    fs.readdir(directoryPath, async (err, files) => {
+      if (err) {
+        reject(new Error("Unable to scan directory:"));
+      }
+
+      files.forEach(function(file) {
+        listOfFiles.push(file);
+      });
+
+      resolve(listOfFiles);
+    });
+  });
 }
 
 function extractHostname(url) {

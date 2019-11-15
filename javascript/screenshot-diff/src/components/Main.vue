@@ -11,14 +11,27 @@
 
           <v-select :items="deviceSizes" label="Select a Device Size" name="deviceSize" v-model="size"></v-select>
 
-          <v-btn :disabled="!valid" color="success" class="mr-4" @click="screenshotUrl">Validate</v-btn>
+          <v-btn :disabled="!valid" color="success" class="mr-4" @click="screenshotUrl">Get Screenshot</v-btn>
+          <v-btn :disabled="!valid" color="success" class="mr-4" @click="getExistingFiles">Get Existing Screenshots</v-btn>
         </v-form>
+      </v-flex>
+
+      <v-flex xs12 mb-5>
+        <v-select :items="listOfFiles" label="List of ScreenShots" name="screenshots" v-model="screenshot" v-on:change="showScreenshot"></v-select>
+      </v-flex>
+
+      <v-flex xs12 mb-5>
+        <v-row align="center" justify="center">
+          <v-img :src="screenshotUrl"></v-img>
+        </v-row>
       </v-flex>
     </v-layout>
   </v-container>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: "Main",
 
@@ -32,11 +45,14 @@ export default {
     ],
     url: '',
     size: '',
+    siteUrl: window.location.href,
+    listOfFiles: [],
+    screenshot: '',
+    screenshotUrl: ''
   }),
   methods: {
     screenshotUrl () {
-      const { url, size } = this;
-      const siteUrl = window.location.href;
+      const { url, size, siteUrl } = this;
 
       let deviceSize = (size.length > 0) ? size : 'Desktop';
 
@@ -55,6 +71,20 @@ export default {
           'Content-Type': 'application/json'
         }
       })
+    },
+    getExistingFiles () {
+      const { siteUrl } = this;
+      const _this = this;
+
+      axios.get(`${siteUrl}v1/get-files`)
+      .then(function(response) {
+        console.log(response.data) // eslint-disable-line no-console
+        _this.listOfFiles = response.data;
+      });
+    },
+    showScreenshot () {
+      const screenshotDir = `http://localhost/personal/practice/javascript/screenshot-diff/screenshots/`;
+      this.screenshotUrl = `${screenshotDir}${screenshot}`;
     }
   }
 };
